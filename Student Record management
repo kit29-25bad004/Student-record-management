@@ -1,28 +1,85 @@
-def add(a, b):
-return a + b
-def subtract(a, b):
-return a - b
-def multiply(a, b):
-return a * b
-def divide(a, b):
-if b == 0:
-return "Cannot divide by zero"
-return a / b
-print("Simple Calculator")
-print("1. Add")
-print("2. Subtract")
-print("3. Multiply")
-print("4. Divide")
-choice = int(input("Enter your choice (1-4): "))
-num1 = float(input("Enter first number: "))
-num2 = float(input("Enter second number: "))
-if choice == 1:
-print("Result:", add(num1, num2))
-elif choice == 2:
-print("Result:", subtract(num1, num2))
-elif choice == 3:
-print("Result:", multiply(num1, num2))
-elif choice == 4:
-print("Result:", divide(num1, num2))
-else:
-print("Invalid Choice")
+import json
+import os
+FILE_NAME = "students.json"
+def load_data():
+    if os.path.exists(FILE_NAME):
+        with open(FILE_NAME, "r") as file:
+            return json.load(file)
+    return []
+def save_data(data):
+    with open(FILE_NAME, "w") as file:
+        json.dump(data, file, indent=4)
+def add_student():
+    data = load_data()
+    roll = input("Enter Roll No: ")
+    name = input("Enter Name: ")
+    marks = input("Enter Marks: ")
+
+    student = {
+        "roll": roll,
+        "name": name,
+        "marks": marks
+    }
+    data.append(student)
+    save_data(data)
+    print("✅ Student Added Successfully")
+def search_student():
+    data = load_data()
+    roll = input("Enter Roll No to Search: ")
+    for student in data:
+        if student["roll"] == roll:
+            print("🎯 Found:", student)
+            return
+    print("❌ Student Not Found")
+def update_student():
+    data = load_data()
+    roll = input("Enter Roll No to Update: ")
+    for student in data:
+        if student["roll"] == roll:
+            student["name"] = input("Enter New Name: ")
+            student["marks"] = input("Enter New Marks: ")
+            save_data(data)
+            print("✅ Updated Successfully")
+            return
+    print("❌ Student Not Found")
+def delete_student():
+    data = load_data()
+    roll = input("Enter Roll No to Delete: ")
+    for student in data:
+        if student["roll"] == roll:
+            data.remove(student)
+            save_data(data)
+            print("🗑️ Deleted Successfully")
+            return
+    print("❌ Student Not Found")
+def display_all():
+    data = load_data()
+    if not data:
+        print("No Records Found")
+    else:
+        for student in data:
+            print(student)
+while True:
+    print("\n--- Student Record System ---")
+    print("1. Add Student")
+    print("2. Search Student")
+    print("3. Update Student")
+    print("4. Delete Student")
+    print("5. Display All")
+    print("6. Exit")
+    choice = input("Enter choice: ")
+    if choice == "1":
+        add_student()
+    elif choice == "2":
+        search_student()
+    elif choice == "3":
+        update_student()
+    elif choice == "4":
+        delete_student()
+    elif choice == "5":
+        display_all()
+    elif choice == "6":
+        print("Exiting...")
+        break
+    else:
+        print("Invalid choice")
